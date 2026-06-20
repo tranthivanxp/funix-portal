@@ -15,7 +15,8 @@ import {
 const DEFAULT_URLS = {
   overview: '?embed=overview',
   b2c_mkt: import.meta.env.VITE_B2C_MKT_URL || 'http://localhost:5173/',
-  mentor: import.meta.env.VITE_MENTOR_URL || 'http://127.0.0.1:8080/'
+  mentor: import.meta.env.VITE_MENTOR_URL || 'http://127.0.0.1:8080/',
+  khaothi: '?embed=khaothi'
 };
 
 function App() {
@@ -46,7 +47,8 @@ function App() {
         setIframeUrls({
           overview: parsed.overview || DEFAULT_URLS.overview,
           b2c_mkt: parsed.b2c_mkt || DEFAULT_URLS.b2c_mkt,
-          mentor: parsed.mentor || DEFAULT_URLS.mentor
+          mentor: parsed.mentor || DEFAULT_URLS.mentor,
+          khaothi: parsed.khaothi || DEFAULT_URLS.khaothi
         });
       } catch (e) {
         console.error('Lỗi phân tích localStorage:', e);
@@ -71,7 +73,8 @@ function App() {
   const activeTitle = {
     overview: 'Tổng quan Hệ thống',
     b2c_mkt: 'Báo cáo B2C Marketing',
-    mentor: 'Báo cáo Mentor Hoạt động'
+    mentor: 'Báo cáo Mentor Hoạt động',
+    khaothi: 'Báo cáo Khảo thí'
   }[activeTab];
 
   return (

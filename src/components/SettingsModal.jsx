@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, Link2, RotateCcw, AlertTriangle, Info, Check } from 'lucide-react';
 
 export default function SettingsModal({ isOpen, onClose, currentUrls, onSave }) {
-  const [urls, setUrls] = useState({ overview: '', b2c_mkt: '', mentor: '' });
+  const [urls, setUrls] = useState({ overview: '', b2c_mkt: '', mentor: '', khaothi: '' });
   const [showSavedToast, setShowSavedToast] = useState(false);
 
   useEffect(() => {
@@ -17,7 +17,8 @@ export default function SettingsModal({ isOpen, onClose, currentUrls, onSave }) 
     setUrls({
       overview: '?embed=overview',
       b2c_mkt: import.meta.env.VITE_B2C_MKT_URL || 'http://localhost:5173/',
-      mentor: import.meta.env.VITE_MENTOR_URL || 'http://127.0.0.1:8080/'
+      mentor: import.meta.env.VITE_MENTOR_URL || 'http://127.0.0.1:8080/',
+      khaothi: '?embed=khaothi'
     });
   };
 
@@ -118,6 +119,24 @@ export default function SettingsModal({ isOpen, onClose, currentUrls, onSave }) 
                   onChange={(e) => setUrls({...urls, mentor: e.target.value})}
                   className="w-full bg-[#0b0f19] border border-[#1e293b] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
                   placeholder="Nhập URL nhúng Mentor..."
+                  required
+                />
+              </div>
+            </div>
+
+            {/* Khao Thi Input */}
+            <div className="space-y-1.5">
+              <label className="text-xs font-bold text-slate-300 uppercase tracking-wider block">URL Khảo thí</label>
+              <div className="relative">
+                <span className="absolute inset-y-0 left-0 pl-3 flex items-center text-slate-500 pointer-events-none">
+                  <Link2 size={16} />
+                </span>
+                <input 
+                  type="text" 
+                  value={urls.khaothi}
+                  onChange={(e) => setUrls({...urls, khaothi: e.target.value})}
+                  className="w-full bg-[#0b0f19] border border-[#1e293b] rounded-xl pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500 transition-colors"
+                  placeholder="Nhập URL nhúng Khảo thí..."
                   required
                 />
               </div>

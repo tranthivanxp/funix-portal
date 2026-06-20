@@ -6,7 +6,8 @@ import {
   Settings, 
   ChevronLeft, 
   ChevronRight,
-  Compass
+  Compass,
+  ClipboardCheck
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -19,7 +20,8 @@ export default function Sidebar({
   const menuItems = [
     { id: 'overview', name: 'Tổng quan', icon: Home, color: 'text-indigo-400' },
     { id: 'b2c_mkt', name: 'B2C_MKT', icon: TrendingUp, color: 'text-amber-400' },
-    { id: 'mentor', name: 'Mentor', icon: GraduationCap, color: 'text-emerald-400' }
+    { id: 'mentor', name: 'Mentor', icon: GraduationCap, color: 'text-emerald-400' },
+    { id: 'khaothi', name: 'Khảo thí', icon: ClipboardCheck, color: 'text-indigo-400' }
   ];
 
   return (

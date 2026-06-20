@@ -74,6 +74,100 @@ async function syncMentor() {
   }
 }
 
+function parseCSV(text) {
+  const lines = [];
+  let row = [""];
+  let inQuotes = false;
+  
+  for (let i = 0; i < text.length; i++) {
+    const c = text[i];
+    const next = text[i+1];
+    
+    if (c === '"') {
+      if (inQuotes && next === '"') {
+        row[row.length - 1] += '"';
+        i++;
+      } else {
+        inQuotes = !inQuotes;
+      }
+    } else if (c === ',' && !inQuotes) {
+      row.push("");
+    } else if ((c === '\r' || c === '\n') && !inQuotes) {
+      if (c === '\r' && next === '\n') {
+        i++;
+      }
+      lines.push(row);
+      row = [""];
+    } else {
+      row[row.length - 1] += c;
+    }
+  }
+  if (row.length > 1 || row[0] !== "") {
+    lines.push(row);
+  }
+  return lines;
+}
+
+async function syncKhaoThi() {
+  const sheetUrl = "https://docs.google.com/spreadsheets/d/1CkYyhewjNOIuYrMhtNP5pUF05C-hv8vTkaBbdbPMoUQ/export?format=csv&gid=1035019380";
+  const destFile = path.join(destDir, 'khaothi_data.json');
+  const localSrc = path.join(__dirname, '../../test/khaothi_actual_data.csv');
+  
+  console.log(`Attempting to fetch Khao Thi data from online Google Sheet...`);
+  let csvText = "";
+  try {
+    const res = await fetch(sheetUrl);
+    if (res.ok) {
+      csvText = await res.text();
+      console.log(`Successfully fetched Khao Thi CSV data from Google Sheet.`);
+    } else {
+      console.warn(`Fetch Khao Thi from Google Sheet failed with status: ${res.status}`);
+    }
+  } catch (err) {
+    console.warn(`Fetch Khao Thi from Google Sheet failed: ${err.message}`);
+  }
+  
+  // Fallback to local copy if fetch failed or returned empty
+  if (!csvText && fs.existsSync(localSrc)) {
+    console.log(`Using fallback local source at: ${localSrc}`);
+    csvText = fs.readFileSync(localSrc, 'utf-8');
+  }
+  
+  if (csvText) {
+    try {
+      const rows = parseCSV(csvText);
+      if (rows.length > 0) {
+        const headers = rows[0].map(h => h.trim());
+        const data = [];
+        for (let i = 1; i < rows.length; i++) {
+          const row = rows[i];
+          if (row.length < headers.length) continue;
+          
+          // Skip entirely empty rows
+          if (row.every(cell => !cell || cell.trim() === "")) continue;
+          
+          const obj = {};
+          headers.forEach((header, index) => {
+            if (header) {
+              obj[header] = (row[index] || "").trim();
+            }
+          });
+          data.push(obj);
+        }
+        
+        fs.writeFileSync(destFile, JSON.stringify(data, null, 2), 'utf-8');
+        console.log(`Successfully synced ${data.length} Khao Thi records to ${destFile}`);
+      } else {
+        console.error("Parsed CSV has 0 rows.");
+      }
+    } catch (parseErr) {
+      console.error(`Error parsing CSV data: ${parseErr.message}`);
+    }
+  } else {
+    console.error("No CSV source data found for Khao Thi.");
+  }
+}
+
 async function main() {
   console.log('--- Syncing Data from Sibling Dashboards / Online Sources ---');
 
@@ -86,6 +180,7 @@ async function main() {
 
     await syncB2c();
     await syncMentor();
+    await syncKhaoThi();
 
     console.log('--- Sync Completed Successfully ---\n');
   } catch (err) {

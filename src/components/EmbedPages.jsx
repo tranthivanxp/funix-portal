@@ -15,6 +15,7 @@ import {
   Award,
   Loader2
 } from 'lucide-react';
+import KhaoThiDashboard from './KhaoThiDashboard';
 
 // Common sub-components to make pages look premium
 
@@ -707,6 +708,7 @@ export default function EmbedRouter() {
   if (embed === 'overview') return <OverviewPage />;
   if (embed === 'b2c_mkt') return <B2cMktPage />;
   if (embed === 'mentor') return <MentorPage />;
+  if (embed === 'khaothi') return <KhaoThiDashboard />;
 
   return (
     <div className="p-8 flex flex-col items-center justify-center min-h-screen text-center bg-[#0b0f19]">
